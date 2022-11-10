@@ -1,0 +1,18 @@
+# Generate rootfs for runc:
+mkdir [container name]/rootfs
+cd [container name]
+docker export $(docker run -d [image name]) |tar -C rootfs -x
+
+# Generate cofig.json:
+sudo oci-runtime-tool generate --args "python" --args "-m" --args "http.server" --linux-namespace-remove network --rootfs-readonly > config.json
+
+# Run rootless container with runc:
+sudo runc run [container name] -d &> /dev/null < /dev/null
+sudo runc list
+
+# Checkpoint and restore
+sudo runc checkpoint pyserver
+sudo runc restore -d pyserver
+
+sudo runc checkpoint --pre-dump --image-path pre1 --tcp-established --shell-job pyserver
+sudo runc checkpoint --parent-path ../pre1 --tcp-established --shell-job pyserver
