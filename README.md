@@ -41,7 +41,7 @@ Format: [id] time
 [14] 07:15:00
 ```
 
-The server holds a 300MB garbage data to make the difference in migration time obvious. Also checkpointed files are transfered at 100MB/s to mimic a slow network.
+The server holds a 300MB garbage data to make the difference in migration time obvious. Also checkpointed files are copied at 100MB/s to mimic transferring over the network.
 
 
 ## How to run
@@ -62,7 +62,7 @@ The server holds a 300MB garbage data to make the difference in migration time o
 
 3. Run a container
    
-   Go to `container/pyserver` and run 
+   Go to `containers/pyserver` and run 
    ```
    sudo runc run pyserver -d &> /dev/null < /dev/null
    ```
