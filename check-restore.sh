@@ -12,24 +12,29 @@ sudo runc list
 echo "============================================================================================================================="
 
 # Start the request
-echo "Starting request..."
-OUTFILE="curl_check_restore.txt"
+echo "Start curl request..."
+OUTFILE="curl_checkpoint_restore.txt"
+
+# Optional output file
+if [[ $# -eq 1 ]]; then
+    OUTFILE=$1
+fi
 curl -s localhost:8000 > ${OUTFILE} &
 
 sleep 2
 
 # Start checkpoint
 cd $HOME$SERVER1
-echo "Running checkpoint..."
+echo "Runc checkpoint..."
 sudo runc checkpoint --tcp-established --shell-job pyserver
 
 # Start restore
 cd $HOME$SERVER2
 TRANSFER_RATE="100M"
-echo "Copying file at $TRANSFER_RATE/s..."
+echo "Copying files at $TRANSFER_RATE/s..."
 sudo rsync -a --bwlimit=$TRANSFER_RATE $HOME$SERVER1/checkpoint .
 
-echo "Restoring into container..."
+echo "Restoring into new container..."
 sudo runc restore -d --shell-job --tcp-established pyserver
 
 # Wait for curl to finish

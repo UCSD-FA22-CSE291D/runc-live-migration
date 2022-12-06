@@ -15,7 +15,8 @@ mkdir ${SERVERPATH2}
 
 cd ${SERVERPATH1}
 sudo docker export $(docker run -d python) |tar -C rootfs -x
-sudo oci-runtime-tool generate --args "python" --args "/tmp/server.py" --linux-namespace-remove network --rootfs-readonly > config.json
+# sudo oci-runtime-tool generate --args "python" --args "/tmp/server.py" --linux-namespace-remove network --rootfs-readonly > config.json
+sudo oci-runtime-tool generate --args "python" --args "/tmp/server.py" --linux-namespace-remove network > config.json
 
 # Make a copy for migration
 cp -R ${SERVERPATH1}/* ${SERVERPATH2}/

@@ -1,0 +1,5 @@
+(00.659707)      1: Error (criu/files-reg.c:2185): Can't open file logfile.txt: No such file or directory
+(00.659710)      1: Error (criu/files.c:1213): Unable to open fd=5 id=0x25
+
+
+Open files cannot be migrated without file system migration.

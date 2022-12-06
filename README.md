@@ -45,6 +45,11 @@ The server holds a 300MB garbage data to make the difference in migration time o
 
 
 ## How to run
+
+### Update:
+Simply run `./run.sh [mem/io] [predump/checkpoint]` to automate the steps.
+
+### Manual:
 1. Install `runc` and `oci-runtime-tools`
    
    `runc` should already be installed by `docker`.

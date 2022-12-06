@@ -12,30 +12,36 @@ sudo runc list
 echo "============================================================================================================================="
 
 # Start the request
-echo "Starting request..."
-curl -s localhost:8000 > curl_predump_restore.txt &
+echo "Start curl request..."
+OUTFILE="curl_predump_restore.txt"
+
+# Optional output file
+if [[ $# -eq 1 ]]; then
+    OUTFILE=$1
+fi
+curl -s localhost:8000 > ${OUTFILE} &
 
 sleep 2
 
 # Predump
 cd $HOME$SERVER1
-echo "Running pre-dump..."
+echo "Runc pre-dump..."
 sudo runc checkpoint --pre-dump --image-path pre1 --tcp-established --shell-job pyserver
 
 # Transfer predump
 TRANSFER_RATE="100M"
-echo "Copying file at ${TRANSFER_RATE}/s..."
+echo "Copying predump files at ${TRANSFER_RATE}/s..."
 sudo rsync -a --bwlimit=$TRANSFER_RATE $HOME$SERVER1/pre1 $HOME$SERVER2/
 
 # Checkpoint
 echo "Running checkpoint and stopping server..."
 sudo runc checkpoint --parent-path ../pre1 --tcp-established --shell-job pyserver
-echo "Copying file at $TRANSFER_RATE/s..."
+echo "Copying checkpoint files at $TRANSFER_RATE/s..."
 sudo rsync -a --bwlimit=$TRANSFER_RATE $HOME$SERVER1/checkpoint $HOME$SERVER2/
 
 # Start restore
 cd $HOME$SERVER2
-echo "Restoring into container..."
+echo "Restoring into new container..."
 sudo runc restore -d --shell-job --tcp-established pyserver
 
 # Wait for curl to finish
